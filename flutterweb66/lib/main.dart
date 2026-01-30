@@ -28,7 +28,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title; // เรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆ
- // เกจัดออยเอ้ย
+ // เกจัดออยเอ้ย มึงอ่ะเกไอพัด
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
