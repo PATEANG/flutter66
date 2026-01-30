@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
-  final String title;
+  final String title; // เรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆเรารักกันนะครับจุ๊ฐๆๆๆๆๆๆ
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
