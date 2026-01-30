@@ -7,7 +7,7 @@ class Page2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('หน้า 2', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('หน้า', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.deepPurple,
         elevation: 4,
       ),
