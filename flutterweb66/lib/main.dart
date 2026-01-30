@@ -28,7 +28,6 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -44,7 +43,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('หน้าแรก', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'หน้าแรก',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.deepPurple,
         elevation: 4,
       ),
@@ -60,7 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
           child: Card(
             elevation: 8,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
             margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
             child: Padding(
               padding: const EdgeInsets.all(32.0),
@@ -99,8 +103,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         label: const Text('เพิ่มจำนวน'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepPurple,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -108,12 +117,26 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
                           Navigator.pushNamed(context, '/page2');
                         },
-                        icon: const Icon(Icons.arrow_forward, color: Colors.deepPurple),
-                        label: const Text('ไปหน้า 2', style: TextStyle(color: Colors.deepPurple)),
+                        icon: const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.deepPurple,
+                        ),
+                        label: const Text(
+                          'ไปหน้า 2',
+                          style: TextStyle(color: Colors.deepPurple),
+                        ),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.deepPurple, width: 2),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          side: const BorderSide(
+                            color: Colors.deepPurple,
+                            width: 2,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
                         ),
                       ),
                     ],
