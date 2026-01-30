@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterweb66/page2.dart';
 
-//import 'package:flutterweb66/page3.dart';
 void main() {
   runApp(const MyApp());
 }
