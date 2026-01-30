@@ -46,7 +46,7 @@ class Page2 extends StatelessWidget {
                       Navigator.pop(context);
                     },
                     icon: const Icon(Icons.arrow_back),
-                    label: const Text('กลับหน้าแรก'),
+                    label: const Text('กลับหน้าแรกอิอิอิกลับหน้าแรกอิอิอิกลับหน้าแรกอิอิอิกลับหน้าแรกอิอิอิกลับหน้าแรกอิอิอิกลับหน้าแรกอิอิอิกลับหน้าแรกอิอิอิกลับหน้าแรกอิอิอิ'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
