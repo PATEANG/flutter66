@@ -1,3 +1,5 @@
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class LoginStaff extends StatefulWidget {
@@ -9,6 +11,45 @@ class LoginStaff extends StatefulWidget {
 }
 
 class _LoginStaffState extends State<LoginStaff> {
+		bool _loading = false;
+
+		Future<void> _register() async {
+			if (!_formKey.currentState!.validate()) return;
+			setState(() { _loading = true; });
+			try {
+				final url = Uri.parse('http://localhost/employee/infoStaff.php');
+				final response = await http.post(
+					url,
+					headers: {'Content-Type': 'application/json'},
+					body: jsonEncode({
+						'action': 'register',
+						'username': username,
+						'password': password,
+					}),
+				);
+				final resp = jsonDecode(response.body);
+				if (resp['status'] == 'success') {
+					if (mounted) {
+						ScaffoldMessenger.of(context).showSnackBar(
+							SnackBar(content: Text(resp['message'] ?? 'สมัครสมาชิกสำเร็จ')),
+						);
+					}
+				} else {
+					if (mounted) {
+						ScaffoldMessenger.of(context).showSnackBar(
+							SnackBar(content: Text(resp['message'] ?? 'สมัครสมาชิกไม่สำเร็จ')),
+						);
+					}
+				}
+			} catch (e) {
+				if (mounted) {
+					ScaffoldMessenger.of(context).showSnackBar(
+						SnackBar(content: Text('เกิดข้อผิดพลาด: $e')),
+					);
+				}
+			}
+			setState(() { _loading = false; });
+		}
 	final _formKey = GlobalKey<FormState>();
 	String username = '';
 	String password = '';
@@ -51,21 +92,75 @@ class _LoginStaffState extends State<LoginStaff> {
 								validator: (v) => v == null || v.isEmpty ? 'กรุณากรอกรหัสผ่าน' : null,
 							),
 							const SizedBox(height: 24),
-								ElevatedButton(
-									onPressed: () {
-										if (_formKey.currentState!.validate()) {
-											// สมมติ login สำเร็จเสมอ
-											widget.onLogin();
-										}
-									},
-									style: ElevatedButton.styleFrom(
-										backgroundColor: Colors.deepPurple,
-										foregroundColor: Colors.white,
-										shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-										padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+							Row(
+								mainAxisAlignment: MainAxisAlignment.spaceBetween,
+								children: [
+									Expanded(
+										child: ElevatedButton(
+											onPressed: _loading
+													? null
+													: () async {
+															if (_formKey.currentState!.validate()) {
+																setState(() { _loading = true; });
+																try {
+																	final url = Uri.parse('http://localhost/employee/infoStaff.php');
+																	final response = await http.post(
+																		url,
+																		headers: {'Content-Type': 'application/json'},
+																		body: jsonEncode({
+																			'action': 'login',
+																			'username': username,
+																			'password': password,
+																		}),
+																	);
+																	final resp = jsonDecode(response.body);
+																	if (resp['status'] == 'success') {
+																		widget.onLogin();
+																	} else {
+																		if (mounted) {
+																			ScaffoldMessenger.of(context).showSnackBar(
+																				SnackBar(content: Text(resp['message'] ?? 'เข้าสู่ระบบไม่สำเร็จ')),
+																			);
+																		}
+																	}
+																} catch (e) {
+																	if (mounted) {
+																		ScaffoldMessenger.of(context).showSnackBar(
+																			SnackBar(content: Text('เกิดข้อผิดพลาด: $e')),
+																		);
+																	}
+																}
+																setState(() { _loading = false; });
+															}
+														},
+											style: ElevatedButton.styleFrom(
+												backgroundColor: Colors.deepPurple,
+												foregroundColor: Colors.white,
+												shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+												padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+											),
+											child: _loading
+													? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+													: const Text('เข้าสู่ระบบ', style: TextStyle(fontSize: 18)),
+										),
 									),
-									child: const Text('เข้าสู่ระบบ', style: TextStyle(fontSize: 18)),
-								),
+									const SizedBox(width: 16),
+									Expanded(
+										child: OutlinedButton(
+											onPressed: _loading ? null : _register,
+											style: OutlinedButton.styleFrom(
+												foregroundColor: Colors.deepPurple,
+												side: const BorderSide(color: Colors.deepPurple),
+												shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+												padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+											),
+											child: _loading
+													? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+													: const Text('สมัครสมาชิก', style: TextStyle(fontSize: 18)),
+										),
+									),
+								],
+							),
 						],
 					),
 				),

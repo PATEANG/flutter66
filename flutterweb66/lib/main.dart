@@ -107,31 +107,37 @@ class _SplitScreenState extends State<SplitScreen> {
                       crossAxisSpacing: 24,
                       children: List.generate(10, (index) {
                         final booked = roomBooked[index];
+                        final disabled = !isLoggedIn;
                         return InkWell(
                           borderRadius: BorderRadius.circular(16),
-                          onTap: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Page2(roomNumber: index + 1),
+                          onTap: disabled
+                              ? null
+                              : () async {
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Page2(roomNumber: index + 1),
+                                    ),
+                                  );
+                                  if (result == true) {
+                                    fetchRoomStatus();
+                                  }
+                                },
+                          child: Opacity(
+                            opacity: disabled ? 0.5 : 1.0,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: booked ? Colors.red : Colors.green,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: Colors.deepPurple, width: 2),
                               ),
-                            );
-                            if (result == true) {
-                              fetchRoomStatus();
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: booked ? Colors.red : Colors.green,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.deepPurple, width: 2),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Room ${index + 1}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                              child: Center(
+                                child: Text(
+                                  'Room ${index + 1}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
@@ -209,7 +215,7 @@ class _MainFormScreenState extends State<MainFormScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'ข้อมูลลูกค้า',
+                'ลงทะเบียนลูกค้า',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.deepPurple),
               ),
               const SizedBox(height: 24),

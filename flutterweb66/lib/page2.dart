@@ -1,3 +1,4 @@
+  // ...existing code...
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -11,6 +12,98 @@ class Page2 extends StatefulWidget {
 }
 
 class _Page2State extends State<Page2> {
+
+      Future<void> editCustomerDialog() async {
+        if (customer == null) return;
+        final nameController = TextEditingController(text: customer?['name'] ?? '');
+        final telController = TextEditingController(text: customer?['tel'] ?? '');
+        final peopleController = TextEditingController(text: customer?['people']?.toString() ?? '');
+        bool saving = false;
+        String? errorMsg;
+
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return AlertDialog(
+                  title: const Text('แก้ไขข้อมูลลูกค้า'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: nameController,
+                        decoration: const InputDecoration(labelText: 'ชื่อ'),
+                      ),
+                      TextField(
+                        controller: telController,
+                        decoration: const InputDecoration(labelText: 'เบอร์โทรศัพท์'),
+                        keyboardType: TextInputType.phone,
+                      ),
+                      TextField(
+                        controller: peopleController,
+                        decoration: const InputDecoration(labelText: 'พักกี่คน'),
+                        keyboardType: TextInputType.number,
+                      ),
+                      if (errorMsg != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(errorMsg!, style: const TextStyle(color: Colors.red)),
+                        ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: saving ? null : () => Navigator.pop(context),
+                      child: const Text('ยกเลิก'),
+                    ),
+                    ElevatedButton(
+                      onPressed: saving
+                          ? null
+                          : () async {
+                              setState(() { saving = true; errorMsg = null; });
+                              final url = Uri.parse('http://localhost/customer/update_customer.php');
+                              try {
+                                final response = await http.post(
+                                  url,
+                                  headers: {'Content-Type': 'application/json'},
+                                  body: jsonEncode({
+                                    'room': widget.roomNumber,
+                                    'name': nameController.text.trim(),
+                                    'tel': telController.text.trim(),
+                                    'people': int.tryParse(peopleController.text.trim()) ?? 1,
+                                  }),
+                                );
+                                final resp = jsonDecode(response.body);
+                                if (resp['status'] == 'success') {
+                                  Navigator.pop(context, true);
+                                } else {
+                                  setState(() { errorMsg = resp['message'] ?? 'เกิดข้อผิดพลาด'; });
+                                }
+                              } catch (e) {
+                                setState(() { errorMsg = 'บันทึกข้อมูลไม่สำเร็จ: $e'; });
+                              }
+                              setState(() { saving = false; });
+                            },
+                      child: saving
+                          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                          : const Text('บันทึก'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ).then((result) async {
+          if (result == true) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('บันทึกข้อมูลเรียบร้อย')),
+            );
+            await fetchRoomInfo();
+          }
+        });
+      }
     Future<void> deleteCustomer() async {
       final url = Uri.parse('http://localhost/customer/delete_customer.php');
       try {
@@ -123,10 +216,7 @@ class _Page2State extends State<Page2> {
                                   children: [
                                     ElevatedButton.icon(
                                       onPressed: () {
-                                        // TODO: Implement edit logic or navigate to edit page
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('ฟีเจอร์แก้ไขข้อมูลยังไม่เปิดใช้งาน')),
-                                        );
+                                        editCustomerDialog();
                                       },
                                       icon: const Icon(Icons.edit),
                                       label: const Text('แก้ไขข้อมูล'),
