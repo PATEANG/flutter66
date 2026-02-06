@@ -17,11 +17,53 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplitScreen(),
         '/main': (context) => const MainFormScreen(),
-        // '/page2': (context) => const Page2(), // Removed: Page2 requires roomNumber
       },
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme(
+          brightness: Brightness.light,
+          primary: Colors.yellow[700]!,
+          onPrimary: Colors.black,
+          secondary: Colors.black,
+          onSecondary: Colors.yellow[700]!,
+          error: Colors.red,
+          onError: Colors.white,
+          background: Colors.black,
+          onBackground: Colors.yellow[700]!,
+          surface: Colors.yellow[50]!,
+          onSurface: Colors.black,
+        ),
+        primaryColor: Colors.yellow[700],
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.yellow,
+          iconTheme: IconThemeData(color: Colors.yellow),
+          titleTextStyle: TextStyle(color: Colors.yellow, fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.yellow[700],
+            foregroundColor: Colors.black,
+            textStyle: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.yellow[700],
+            side: BorderSide(color: Colors.yellow[700]!),
+          ),
+        ),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: Colors.yellow, fontWeight: FontWeight.bold),
+          bodyMedium: TextStyle(color: Colors.yellow),
+          bodySmall: TextStyle(color: Colors.yellow),
+          titleLarge: TextStyle(color: Colors.yellow, fontWeight: FontWeight.bold),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          labelStyle: TextStyle(color: Colors.yellow[700]),
+          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+        ),
       ),
     );
   }
@@ -84,7 +126,7 @@ class _SplitScreenState extends State<SplitScreen> {
           Expanded(
             flex: 2,
             child: Container(
-              color: Colors.white,
+              color: const Color.fromARGB(255, 221, 221, 221),
               child: Center(
                 child: isLoggedIn
                     ? MainFormScreen(onSaved: fetchRoomStatus)
@@ -96,7 +138,7 @@ class _SplitScreenState extends State<SplitScreen> {
           Expanded(
             flex: 3,
             child: Container(
-              color: const Color(0xFFEDE7F6),
+              color: const Color.fromARGB(255, 221, 221, 221),
               child: Padding(
                 padding: const EdgeInsets.all(32.0),
                 child: loadingRooms
@@ -129,7 +171,7 @@ class _SplitScreenState extends State<SplitScreen> {
                               decoration: BoxDecoration(
                                 color: booked ? Colors.red : Colors.green,
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: Colors.deepPurple, width: 2),
+                                border: Border.all(color: Colors.black, width: 2),
                               ),
                               child: Center(
                                 child: Text(
@@ -216,28 +258,52 @@ class _MainFormScreenState extends State<MainFormScreen> {
             children: [
               const Text(
                 'ลงทะเบียนลูกค้า',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
               ),
               const SizedBox(height: 24),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'ชื่อลูกค้า'),
+                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  labelText: 'ชื่อลูกค้า',
+                  labelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                ),
                 onChanged: (v) => setState(() => name = v),
               ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'เบอร์โทรศัพท์'),
+                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  labelText: 'เบอร์โทรศัพท์',
+                  labelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                ),
                 keyboardType: TextInputType.phone,
                 onChanged: (v) => setState(() => phone = v),
               ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'พักกี่คน'),
+                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  labelText: 'พักกี่คน',
+                  labelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                ),
                 keyboardType: TextInputType.number,
                 onChanged: (v) => setState(() => people = v),
               ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'ห้องอะไร'),
+                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  labelText: 'ห้องอะไร',
+                  labelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                ),
                 onChanged: (v) => setState(() => room = v),
               ),
               const SizedBox(height: 24),
@@ -248,12 +314,12 @@ class _MainFormScreenState extends State<MainFormScreen> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.yellow[700],
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 ),
-                child: const Text('บันทึก', style: TextStyle(fontSize: 18)),
+                child: const Text('บันทึก', style: TextStyle(fontSize: 18, color: Colors.yellow)),
               ),
             ],
           ),

@@ -28,22 +28,40 @@ class _Page2State extends State<Page2> {
             return StatefulBuilder(
               builder: (context, setState) {
                 return AlertDialog(
-                  title: const Text('แก้ไขข้อมูลลูกค้า'),
+                  title: const Text('แก้ไขข้อมูลลูกค้า', style: TextStyle(color: Colors.black)),
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextField(
                         controller: nameController,
-                        decoration: const InputDecoration(labelText: 'ชื่อ'),
+                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                        decoration: const InputDecoration(
+                          labelText: 'ชื่อ',
+                          labelStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                        ),
                       ),
                       TextField(
                         controller: telController,
-                        decoration: const InputDecoration(labelText: 'เบอร์โทรศัพท์'),
+                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                        decoration: const InputDecoration(
+                          labelText: 'เบอร์โทรศัพท์',
+                          labelStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                        ),
                         keyboardType: TextInputType.phone,
                       ),
                       TextField(
                         controller: peopleController,
-                        decoration: const InputDecoration(labelText: 'พักกี่คน'),
+                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                        decoration: const InputDecoration(
+                          labelText: 'พักกี่คน',
+                          labelStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.yellow)),
+                        ),
                         keyboardType: TextInputType.number,
                       ),
                       if (errorMsg != null)
@@ -56,7 +74,7 @@ class _Page2State extends State<Page2> {
                   actions: [
                     TextButton(
                       onPressed: saving ? null : () => Navigator.pop(context),
-                      child: const Text('ยกเลิก'),
+                      child: const Text('ยกเลิก', style: TextStyle(color: Colors.black)),
                     ),
                     ElevatedButton(
                       onPressed: saving
@@ -86,9 +104,13 @@ class _Page2State extends State<Page2> {
                               }
                               setState(() { saving = false; });
                             },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.yellow[700],
+                        foregroundColor: Colors.black,
+                      ),
                       child: saving
-                          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                          : const Text('บันทึก'),
+                          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
+                          : const Text('บันทึก', style: TextStyle(color: Colors.black)),
                     ),
                   ],
                 );
@@ -172,28 +194,24 @@ class _Page2State extends State<Page2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Room ${widget.roomNumber}', style: const TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.deepPurple,
+        title: Text('Room ${widget.roomNumber}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+        backgroundColor: Colors.yellow[700],
         elevation: 4,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFD1C4E9), Color(0xFFB39DDB)],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-          ),
-        ),
+        color: Colors.grey[300],
         child: Center(
           child: Card(
+            color: Colors.yellow[50],
             elevation: 8,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
             margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
             child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: loading
-                  ? const CircularProgressIndicator()
+                  ? const CircularProgressIndicator(color: Colors.yellow)
                   : error != null
                       ? Text(error!, style: const TextStyle(color: Colors.red, fontSize: 20))
                       : isVacant
@@ -202,12 +220,12 @@ class _Page2State extends State<Page2> {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('ข้อมูลลูกค้า', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.deepPurple)),
+                                const Text('ข้อมูลลูกค้า', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black)),
                                 const SizedBox(height: 16),
-                                Text('ชื่อ: ${customer?['name'] ?? '-'}', style: const TextStyle(fontSize: 18)),
-                                Text('เบอร์โทรศัพท์: ${customer?['tel'] ?? '-'}', style: const TextStyle(fontSize: 18)),
-                                Text('พักกี่คน: ${customer?['people'] ?? '-'}', style: const TextStyle(fontSize: 18)),
-                                Text('ห้อง: ${customer?['room'] ?? '-'}', style: const TextStyle(fontSize: 18)),
+                                Text('ชื่อ: ${customer?['name'] ?? '-'}', style: const TextStyle(fontSize: 18, color: Colors.black)),
+                                Text('เบอร์โทรศัพท์: ${customer?['tel'] ?? '-'}', style: const TextStyle(fontSize: 18, color: Colors.black)),
+                                Text('พักกี่คน: ${customer?['people'] ?? '-'}', style: const TextStyle(fontSize: 18, color: Colors.black)),
+                                Text('ห้อง: ${customer?['room'] ?? '-'}', style: const TextStyle(fontSize: 18, color: Colors.black)),
                                 if (customer?['recorded_at'] != null)
                                   Text('เวลาจอง: ${customer?['recorded_at']}', style: const TextStyle(fontSize: 16, color: Colors.grey)),
                                 const SizedBox(height: 24),
@@ -218,11 +236,11 @@ class _Page2State extends State<Page2> {
                                       onPressed: () {
                                         editCustomerDialog();
                                       },
-                                      icon: const Icon(Icons.edit),
-                                      label: const Text('แก้ไขข้อมูล'),
+                                      icon: const Icon(Icons.edit, color: Colors.black),
+                                      label: const Text('แก้ไขข้อมูล', style: TextStyle(color: Colors.black)),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.orange,
-                                        foregroundColor: Colors.white,
+                                        backgroundColor: Colors.yellow[700],
+                                        foregroundColor: Colors.black,
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                                       ),
@@ -233,26 +251,28 @@ class _Page2State extends State<Page2> {
                                         final confirm = await showDialog<bool>(
                                           context: context,
                                           builder: (context) => AlertDialog(
-                                            title: const Text('ยืนยันการลบข้อมูล'),
-                                            content: const Text('คุณต้องการลบข้อมูลลูกค้าห้องนี้ใช่หรือไม่?'),
+                                            title: const Text('ยืนยันการลบข้อมูล', style: TextStyle(color: Colors.black)),
+                                            content: const Text('คุณต้องการลบข้อมูลลูกค้าห้องนี้ใช่หรือไม่?', style: TextStyle(color: Colors.black)),
                                             actions: [
                                               TextButton(
                                                 onPressed: () => Navigator.pop(context, false),
-                                                child: const Text('ยกเลิก'),
+                                                child: const Text('ยกเลิก', style: TextStyle(color: Colors.black)),
                                               ),
                                               TextButton(
                                                 onPressed: () => Navigator.pop(context, true),
-                                                child: const Text('ลบ'),
+                                                child: const Text('ลบ', style: TextStyle(color: Colors.red)),
                                               ),
                                             ],
+                                            backgroundColor: Colors.yellow[50],
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                                           ),
                                         );
                                         if (confirm == true) {
                                           await deleteCustomer();
                                         }
                                       },
-                                      icon: const Icon(Icons.delete),
-                                      label: const Text('ลบข้อมูล'),
+                                      icon: const Icon(Icons.delete, color: Colors.white),
+                                      label: const Text('ลบข้อมูล', style: TextStyle(color: Colors.white)),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.red,
                                         foregroundColor: Colors.white,
