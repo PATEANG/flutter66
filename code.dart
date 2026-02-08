@@ -15,52 +15,27 @@ class _Page2State extends State<Page2> {
     1: {
       'capacity': 2,
       'furniture': ['เตียงคู่', 'ตู้เสื้อผ้า', 'โต๊ะ'],
-      'image': 'assets/Room1.png',
+      'image': 'assets/rooms/room1.jpg',
     },
     2: {
       'capacity': 3,
       'furniture': ['เตียงเดี่ยว', 'ตู้เล็ก', 'เก้าอี้'],
-      'image': 'assets/Room2.png',
+      'image': 'assets/rooms/room2.jpg',
     },
     3: {
       'capacity': 2,
       'furniture': ['เตียงคู่', 'ทีวี'],
-      'image': 'assets/Room3.png',
+      'image': 'assets/rooms/room3.jpg',
     },
     4: {
       'capacity': 4,
       'furniture': ['เตียงสองชั้น', 'โต๊ะ', 'ตู้'],
-      'image': 'assets/Room4.png',
+      'image': 'assets/rooms/room4.jpg',
     },
     5: {
       'capacity': 1,
       'furniture': ['เตียงเดี่ยว'],
-      'image': 'assets/Room5.png',
-    },
-    6: {
-      'capacity': 2,
-      'furniture': ['เตียงคู่', 'ตู้เสื้อผ้า', 'โต๊ะ'],
-      'image': 'assets/Room6.png',
-    },
-    7: {
-      'capacity': 3,
-      'furniture': ['เตียงเดี่ยว', 'ตู้เล็ก', 'เก้าอี้'],
-      'image': 'assets/Room7.png',
-    },
-    8: {
-      'capacity': 2,
-      'furniture': ['เตียงคู่', 'ทีวี'],
-      'image': 'assets/Room8.png',
-    },
-    9: {
-      'capacity': 4,
-      'furniture': ['เตียงสองชั้น', 'โต๊ะ', 'ตู้'],
-      'image': 'assets/Room9.png',
-    },
-    10: {
-      'capacity': 1,
-      'furniture': ['เตียงเดี่ยว'],
-      'image': 'assets/Room10.png',
+      'image': 'assets/rooms/room5.jpg',
     },
   };
 
