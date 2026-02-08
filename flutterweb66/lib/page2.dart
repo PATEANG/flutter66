@@ -110,18 +110,58 @@ class _Page2State extends State<Page2> {
     });
   }
 
-  // ✅ แสดงรูป (ไม่มีตกแต่งเพิ่ม)
+  // ✅ แสดงรูป รองรับ web/mobile
   Widget _roomImage() {
     final img = roomDetails?['image'];
     if (img == null) return const SizedBox();
 
-    return Image.asset(
-      img,
-      width: double.infinity,
-      height: 180,
-      fit: BoxFit.cover,
+    const double size = 300;
+    final border = Border.all(color: Colors.grey.shade400, width: 2);
+    final radius = BorderRadius.circular(12);
+
+    Widget imageWidget;
+    if (identical(0, 0.0)) {
+      // Flutter web
+      imageWidget = Image.network(
+        img,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Text('ไม่พบรูปภาพ'),
+      );
+    } else {
+      // Flutter mobile/desktop
+      imageWidget = Image.asset(
+        img,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+      );
+    }
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClipRRect(
+            borderRadius: radius,
+            child: Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                border: border,
+                borderRadius: radius,
+                color: Colors.white,
+              ),
+              child: imageWidget,
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
     );
   }
+  // ...existing code...
 
   List<Widget> _buildFurnitureWidgets(dynamic furnitureData) {
     if (furnitureData == null) return const [Text('-')];
