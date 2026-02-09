@@ -110,58 +110,18 @@ class _Page2State extends State<Page2> {
     });
   }
 
-  // ✅ แสดงรูป รองรับ web/mobile
+  /// แสดงรูปจาก assets (ไม่แตะ logic เดิม)
   Widget _roomImage() {
     final img = roomDetails?['image'];
     if (img == null) return const SizedBox();
 
-    const double size = 300;
-    final border = Border.all(color: Colors.grey.shade400, width: 2);
-    final radius = BorderRadius.circular(12);
-
-    Widget imageWidget;
-    if (identical(0, 0.0)) {
-      // Flutter web
-      imageWidget = Image.network(
-        img,
-        width: size,
-        height: size,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => const Text('ไม่พบรูปภาพ'),
-      );
-    } else {
-      // Flutter mobile/desktop
-      imageWidget = Image.asset(
-        img,
-        width: size,
-        height: size,
-        fit: BoxFit.cover,
-      );
-    }
-
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ClipRRect(
-            borderRadius: radius,
-            child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                border: border,
-                borderRadius: radius,
-                color: Colors.white,
-              ),
-              child: imageWidget,
-            ),
-          ),
-          const SizedBox(height: 24),
-        ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.asset(img, width: 300, height: 300, fit: BoxFit.cover),
       ),
     );
   }
-  // ...existing code...
 
   List<Widget> _buildFurnitureWidgets(dynamic furnitureData) {
     if (furnitureData == null) return const [Text('-')];
@@ -183,7 +143,6 @@ class _Page2State extends State<Page2> {
           ),
         ),
         backgroundColor: Colors.yellow[700],
-        elevation: 4,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Container(
@@ -199,82 +158,62 @@ class _Page2State extends State<Page2> {
             margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
             child: Padding(
               padding: const EdgeInsets.all(32.0),
-              child: loading
-                  ? const CircularProgressIndicator(color: Colors.yellow)
-                  : error != null
-                  ? Text(
-                      error!,
-                      style: const TextStyle(color: Colors.red, fontSize: 20),
-                    )
-                  : isVacant
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'ห้องนี้ว่างอยู่',
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
+
+              // ✅ จุดสำคัญ แก้ overflow
+              child: SingleChildScrollView(
+                child: loading
+                    ? const CircularProgressIndicator(color: Colors.yellow)
+                    : error != null
+                    ? Text(
+                        error!,
+                        style: const TextStyle(color: Colors.red, fontSize: 20),
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (!isVacant) ...[
+                            const Text(
+                              'ข้อมูลลูกค้า',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text('ชื่อ: ${customer?['name'] ?? '-'}'),
+                            Text('เบอร์โทรศัพท์: ${customer?['tel'] ?? '-'}'),
+                            Text('พักกี่คน: ${customer?['people'] ?? '-'}'),
+                            const SizedBox(height: 24),
+                          ] else ...[
+                            const Text(
+                              'ห้องนี้ว่างอยู่',
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                          ],
+                          const Text(
+                            'รายละเอียดห้อง',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'รายละเอียดห้อง',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                          const SizedBox(height: 8),
+                          Text(
+                            'จำนวนคนที่ห้องรองรับ: ${roomDetails?['capacity'] ?? '-'}',
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'จำนวนคนที่ห้องรองรับ: ${roomDetails?['capacity'] ?? '-'}',
-                        ),
-                        const SizedBox(height: 6),
-                        const Text('เฟอร์นิเจอร์:'),
-                        ..._buildFurnitureWidgets(roomDetails?['furniture']),
-                        const SizedBox(height: 12),
-                        _roomImage(), // ✅ รูปอยู่ตรงนี้
-                      ],
-                    )
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'ข้อมูลลูกค้า',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text('ชื่อ: ${customer?['name'] ?? '-'}'),
-                        Text('เบอร์โทรศัพท์: ${customer?['tel'] ?? '-'}'),
-                        Text('พักกี่คน: ${customer?['people'] ?? '-'}'),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'รายละเอียดห้อง',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'จำนวนคนที่ห้องรองรับ: ${roomDetails?['capacity'] ?? '-'}',
-                        ),
-                        const SizedBox(height: 6),
-                        const Text('เฟอร์นิเจอร์:'),
-                        ..._buildFurnitureWidgets(roomDetails?['furniture']),
-                        const SizedBox(height: 12),
-                        _roomImage(), // ✅ รูปอยู่ตรงนี้
-                      ],
-                    ),
+                          const SizedBox(height: 6),
+                          const Text('เฟอร์นิเจอร์:'),
+                          ..._buildFurnitureWidgets(roomDetails?['furniture']),
+                          const SizedBox(height: 24),
+                          _roomImage(),
+                        ],
+                      ),
+              ),
             ),
           ),
         ),
