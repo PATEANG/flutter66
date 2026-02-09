@@ -11,6 +11,88 @@ class Page2 extends StatefulWidget {
 }
 
 class _Page2State extends State<Page2> {
+    // ---------- EDIT CUSTOMER ----------
+    Future<void> editCustomer() async {
+      final nameController = TextEditingController(text: customer?['name'] ?? '');
+      final telController = TextEditingController(text: customer?['tel'] ?? '');
+      final peopleController = TextEditingController(text: customer?['people']?.toString() ?? '');
+
+      final formKey = GlobalKey<FormState>();
+      final result = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('แก้ไขข้อมูลลูกค้า'),
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'ชื่อ'),
+                  validator: (v) => v == null || v.isEmpty ? 'กรุณากรอกชื่อ' : null,
+                ),
+                TextFormField(
+                  controller: telController,
+                  decoration: const InputDecoration(labelText: 'เบอร์โทรศัพท์'),
+                  validator: (v) => v == null || v.isEmpty ? 'กรุณากรอกเบอร์โทรศัพท์' : null,
+                ),
+                TextFormField(
+                  controller: peopleController,
+                  decoration: const InputDecoration(labelText: 'พักกี่คน'),
+                  keyboardType: TextInputType.number,
+                  validator: (v) => v == null || v.isEmpty ? 'กรุณากรอกจำนวนคน' : null,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('ยกเลิก'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (formKey.currentState?.validate() != true) return;
+                try {
+                  final url = Uri.parse('http://localhost/customer/update_customer.php');
+                  final data = {
+                    'room': widget.roomNumber,
+                    'name': nameController.text,
+                    'tel': telController.text,
+                    'people': int.tryParse(peopleController.text) ?? 0,
+                  };
+                  final resp = await http.post(
+                    url,
+                    headers: {'Content-Type': 'application/json'},
+                    body: jsonEncode(data),
+                  );
+                  final json = jsonDecode(resp.body);
+                  if (json['status'] == 'success') {
+                    if (mounted) Navigator.pop(context, true);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('แก้ไขไม่สำเร็จ: \\${json['message']}')),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('แก้ไขไม่สำเร็จ: $e')),
+                  );
+                }
+              },
+              child: const Text('บันทึก', style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+        ),
+      );
+      if (result == true) {
+        await fetchRoomInfo();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('แก้ไขข้อมูลเรียบร้อย')),
+        );
+      }
+    }
   static const Map<int, Map<String, dynamic>> _defaultRoomDetails = {
     1: {
       'capacity': 2,
@@ -165,7 +247,10 @@ class _Page2State extends State<Page2> {
         body: jsonEncode({'room': widget.roomNumber}),
       );
 
-      await fetchRoomInfo();
+      // กลับไปหน้าลงทะเบียนลูกค้า และแจ้งให้ refresh
+      if (mounted) {
+        Navigator.pop(context, true); // ส่ง true เพื่อให้หน้าหลัก fetch ใหม่
+      }
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -288,28 +373,43 @@ class _Page2State extends State<Page2> {
 
                     const SizedBox(width: 32),
 
-                    // RIGHT : IMAGE + DELETE BUTTON
+                    // RIGHT : IMAGE + DELETE/EDIT BUTTON
                     Column(
                       children: [
                         _roomImage(),
                         const SizedBox(height: 16),
 
                         if (!isVacant)
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: ElevatedButton.icon(
-                              onPressed: deleteCustomer,
-                              icon: const Icon(Icons.delete),
-                              label: const Text('ลบการเข้าใช้ห้อง'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 12,
+                          Row(
+                            children: [
+                              ElevatedButton.icon(
+                                onPressed: editCustomer,
+                                icon: const Icon(Icons.edit),
+                                label: const Text('แก้ไขข้อมูล'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
                                 ),
                               ),
-                            ),
+                              const SizedBox(width: 12),
+                              ElevatedButton.icon(
+                                onPressed: deleteCustomer,
+                                icon: const Icon(Icons.delete),
+                                label: const Text('ลบการเข้าใช้ห้อง'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                       ],
                     ),
