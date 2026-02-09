@@ -66,6 +66,10 @@ flutter:
    - assets/Room4.png
    - assets/Room5.png
    - assets/Room6.png
+   - assets/Room7.png
+   - assets/Room8.png
+   - assets/Room9.png
+   - assets/Room10.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

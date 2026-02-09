@@ -70,6 +70,31 @@ class _Page2State extends State<Page2> {
   bool isVacant = false;
   String? error;
 
+  // ---------- TEXT STYLES ----------
+  final titleStyle = const TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  );
+
+  final sectionStyle = const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+  );
+
+  final labelStyle = const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+  );
+
+  final valueStyle = const TextStyle(
+    fontSize: 16,
+    height: 1.4,
+    color: Colors.black,
+  );
+
   @override
   void initState() {
     super.initState();
@@ -110,27 +135,90 @@ class _Page2State extends State<Page2> {
     });
   }
 
-  /// แสดงรูปจาก assets (ไม่แตะ logic เดิม)
-  Widget _roomImage() {
-    final img = roomDetails?['image'];
-    if (img == null) return const SizedBox();
+  // ---------- DELETE CUSTOMER ----------
+  Future<void> deleteCustomer() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ยืนยันการลบ'),
+        content: const Text('ต้องการลบการเข้าใช้ห้องนี้หรือไม่?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('ยกเลิก'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('ลบ', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
 
-    return Center(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.asset(img, width: 300, height: 300, fit: BoxFit.cover),
+    if (confirm != true) return;
+
+    try {
+      final url = Uri.parse('http://localhost/customer/delete_customer.php');
+      await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'room': widget.roomNumber}),
+      );
+
+      await fetchRoomInfo();
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('ลบไม่สำเร็จ: $e')));
+    }
+  }
+
+  // ---------- UI HELPERS ----------
+  Widget _infoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: RichText(
+        text: TextSpan(
+          style: valueStyle,
+          children: [
+            TextSpan(text: '$label: ', style: labelStyle),
+            TextSpan(text: value),
+          ],
+        ),
       ),
     );
   }
 
   List<Widget> _buildFurnitureWidgets(dynamic furnitureData) {
-    if (furnitureData == null) return const [Text('-')];
-    if (furnitureData is List) {
-      return furnitureData.map<Widget>((e) => Text('- $e')).toList();
+    if (furnitureData == null) {
+      return [Text('-', style: valueStyle)];
     }
-    return [Text('- $furnitureData')];
+
+    if (furnitureData is List) {
+      return furnitureData
+          .map(
+            (e) => Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text('• $e', style: valueStyle),
+            ),
+          )
+          .toList();
+    }
+
+    return [Text('• $furnitureData', style: valueStyle)];
   }
 
+  Widget _roomImage() {
+    final img = roomDetails?['image'];
+    if (img == null) return const SizedBox();
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Image.asset(img, width: 300, height: 300, fit: BoxFit.cover),
+    );
+  }
+
+  // ---------- BUILD ----------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,62 +245,76 @@ class _Page2State extends State<Page2> {
             ),
             margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
             child: Padding(
-              padding: const EdgeInsets.all(32.0),
-
-              // ✅ จุดสำคัญ แก้ overflow
+              padding: const EdgeInsets.all(32),
               child: SingleChildScrollView(
-                child: loading
-                    ? const CircularProgressIndicator(color: Colors.yellow)
-                    : error != null
-                    ? Text(
-                        error!,
-                        style: const TextStyle(color: Colors.red, fontSize: 20),
-                      )
-                    : Column(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // LEFT : TEXT
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (!isVacant) ...[
-                            const Text(
-                              'ข้อมูลลูกค้า',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            Text('ข้อมูลลูกค้า', style: titleStyle),
                             const SizedBox(height: 16),
-                            Text('ชื่อ: ${customer?['name'] ?? '-'}'),
-                            Text('เบอร์โทรศัพท์: ${customer?['tel'] ?? '-'}'),
-                            Text('พักกี่คน: ${customer?['people'] ?? '-'}'),
-                            const SizedBox(height: 24),
+                            _infoRow('ชื่อ', customer?['name'] ?? '-'),
+                            _infoRow('เบอร์โทรศัพท์', customer?['tel'] ?? '-'),
+                            _infoRow(
+                              'พักกี่คน',
+                              '${customer?['people'] ?? '-'}',
+                            ),
+                            const SizedBox(height: 28),
                           ] else ...[
-                            const Text(
+                            Text(
                               'ห้องนี้ว่างอยู่',
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: titleStyle.copyWith(color: Colors.green),
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 28),
                           ],
-                          const Text(
-                            'รายละเอียดห้อง',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Text('รายละเอียดห้อง', style: sectionStyle),
+                          const SizedBox(height: 12),
+                          _infoRow(
+                            'จำนวนคนที่รองรับ',
+                            '${roomDetails?['capacity'] ?? '-'} คน',
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'จำนวนคนที่ห้องรองรับ: ${roomDetails?['capacity'] ?? '-'}',
-                          ),
+                          const SizedBox(height: 12),
+                          Text('เฟอร์นิเจอร์', style: labelStyle),
                           const SizedBox(height: 6),
-                          const Text('เฟอร์นิเจอร์:'),
                           ..._buildFurnitureWidgets(roomDetails?['furniture']),
-                          const SizedBox(height: 24),
-                          _roomImage(),
                         ],
                       ),
+                    ),
+
+                    const SizedBox(width: 32),
+
+                    // RIGHT : IMAGE + DELETE BUTTON
+                    Column(
+                      children: [
+                        _roomImage(),
+                        const SizedBox(height: 16),
+
+                        if (!isVacant)
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: ElevatedButton.icon(
+                              onPressed: deleteCustomer,
+                              icon: const Icon(Icons.delete),
+                              label: const Text('ลบการเข้าใช้ห้อง'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
